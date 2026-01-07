@@ -1,0 +1,47 @@
+<%- include('../partials/header') %>
+
+<div class="container" style="height: 80vh; display: flex; flex-direction: column;">
+    <div style="margin-bottom: 20px;">
+        <a href="/chat/inbox" class="btn" style="background-color: #999;">&larr; Back to Inbox</a>
+        <h1 style="display: inline-block; margin-left: 15px; vertical-align: middle;">Chat with <%= partner.name %></h1>
+    </div>
+
+    <!-- Messages Area -->
+    <div class="card" style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column;">
+        <% messages.forEach(m => { %>
+            <% 
+                const alignSelf = m.sender_id == userId ? 'flex-end' : 'flex-start';
+                const bgColor = m.sender_id == userId ? '#dcedc8' : '#f1f1f1';
+            %>
+            <div style="
+                max-width: 70%; 
+                margin-bottom: 10px; 
+                padding: 10px; 
+                border-radius: 10px; 
+                align-self: <%= alignSelf %>;
+                background-color: <%= bgColor %>;
+            ">
+                <p style="margin: 0;"><%= m.content %></p>
+                <small style="display: block; text-align: right; color: #777; font-size: 0.7em; margin-top: 5px;">
+                    <%= new Date(m.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %>
+                </small>
+            </div>
+        <% }) %>
+    </div>
+
+    <!-- Input Area -->
+    <div style="margin-top: 20px;">
+        <form action="/chat/<%= partner.id %>" method="POST" style="display: flex; gap: 10px;">
+            <input type="text" name="content" placeholder="Type a message..." required autocomplete="off" style="flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 20px;">
+            <button type="submit" class="btn" style="border-radius: 20px; padding-left: 30px; padding-right: 30px;">Send</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Scroll to bottom
+    const chatContainer = document.querySelector('.card');
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+</script>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,50 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <h1>Your Cart</h1>
+    
+    <% if (books.length === 0) { %>
+        <div class="card" style="text-align: center; padding: 40px;">
+            <p>Your cart is empty.</p>
+            <a href="/search" class="btn" style="margin-top: 15px;">Browse Books</a>
+        </div>
+    <% } else { %>
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+            <div>
+                <% books.forEach(book => { %>
+                    <div class="card" style="display: flex; gap: 20px; align-items: center; margin-bottom: 15px;">
+                        <% if (book.image_url) { %>
+                           <img src="<%= book.image_url %>" style="width: 80px; height: 100px; object-fit: cover;">
+                        <% } else { %>
+                           <div style="width: 80px; height: 100px; background: #eee;"></div>
+                        <% } %>
+                        <div style="flex: 1;">
+                            <h3><a href="/books/<%= book.id %>"><%= book.title %></a></h3>
+                            <p><%= book.author %></p>
+                            <p><strong><%= book.price > 0 ? '$' + book.price : 'Exchange' %></strong></p>
+                        </div>
+                        <form action="/buyer/cart/remove" method="POST">
+                            <input type="hidden" name="bookId" value="<%= book.id %>">
+                            <button type="submit" class="btn" style="background-color: #cc0000; padding: 5px 10px; font-size: 0.9rem;">Remove</button>
+                        </form>
+                    </div>
+                <% }) %>
+            </div>
+            
+            <div class="card" style="height: fit-content;">
+                <h3>Summary</h3>
+                <p>Total Items: <%= books.length %></p>
+                <p style="font-size: 1.2rem; font-weight: bold; margin: 15px 0;">
+                    Total Price: $
+                    <%= books.reduce((sum, b) => sum + parseFloat(b.price || 0), 0).toFixed(2) %>
+                </p>
+                <form action="/buyer/checkout" method="POST">
+                    <button type="submit" class="btn" style="width: 100%; font-size: 1.1rem;">Checkout</button>
+                </form>
+                <p style="font-size: 0.8rem; color: #666; margin-top: 10px;">By checking out, you create orders for the respective sellers.</p>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+<%- include('../partials/footer') %>

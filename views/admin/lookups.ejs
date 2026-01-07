@@ -1,0 +1,65 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <h1>Catalog Management</h1>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+        
+        <!-- Genres -->
+        <div class="card">
+            <h3>Genres</h3>
+            <ul style="margin-bottom: 20px;">
+                <% genres.forEach(item => { %>
+                    <li style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <%= item.name %>
+                        <a href="/admin/lookups/delete/genre/<%= item.id %>" style="color: red;">[x]</a>
+                    </li>
+                <% }) %>
+            </ul>
+            <form action="/admin/lookups" method="POST">
+                <input type="hidden" name="type" value="genre">
+                <input type="text" name="name" placeholder="New Genre" required style="padding: 5px; width: 60%;">
+                <button type="submit" class="btn" style="padding: 5px 10px;">Add</button>
+            </form>
+        </div>
+
+        <!-- Languages -->
+        <div class="card">
+            <h3>Languages</h3>
+            <ul style="margin-bottom: 20px;">
+                <% languages.forEach(item => { %>
+                    <li style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <%= item.name %>
+                        <a href="/admin/lookups/delete/language/<%= item.id %>" style="color: red;">[x]</a>
+                    </li>
+                <% }) %>
+            </ul>
+            <form action="/admin/lookups" method="POST">
+                <input type="hidden" name="type" value="language">
+                <input type="text" name="name" placeholder="New Language" required style="padding: 5px; width: 60%;">
+                <button type="submit" class="btn" style="padding: 5px 10px;">Add</button>
+            </form>
+        </div>
+
+        <!-- Cities -->
+        <div class="card">
+            <h3>Cities</h3>
+            <ul style="margin-bottom: 20px;">
+                <% cities.forEach(item => { %>
+                    <li style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <%= item.name %>
+                        <a href="/admin/lookups/delete/city/<%= item.id %>" style="color: red;">[x]</a>
+                    </li>
+                <% }) %>
+            </ul>
+            <form action="/admin/lookups" method="POST">
+                <input type="hidden" name="type" value="city">
+                <input type="text" name="name" placeholder="New City" required style="padding: 5px; width: 60%;">
+                <button type="submit" class="btn" style="padding: 5px 10px;">Add</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

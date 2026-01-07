@@ -1,0 +1,58 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <h1>User Management</h1>
+    
+    <div class="card" style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background-color: var(--secondary-color); color: white;">
+                    <th style="padding: 10px; text-align: left;">ID</th>
+                    <th style="padding: 10px; text-align: left;">Name</th>
+                    <th style="padding: 10px; text-align: left;">Email</th>
+                    <th style="padding: 10px; text-align: left;">Role</th>
+                    <th style="padding: 10px; text-align: left;">Status</th>
+                    <th style="padding: 10px; text-align: left;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(u => { %>
+                    <tr style="border-bottom: 1px solid #ccc;">
+                        <td style="padding: 10px;"><%= u.id %></td>
+                        <td style="padding: 10px;"><%= u.first_name %> <%= u.last_name %></td>
+                        <td style="padding: 10px;"><%= u.email %></td>
+                        <td style="padding: 10px;"><%= u.role %></td>
+                        <td style="padding: 10px;">
+                            <%= u.status %>
+                            <% if(u.blocked_until) { %>
+                                <br><small>(Until <%= new Date(u.blocked_until).toLocaleDateString() %>)</small>
+                            <% } %>
+                        </td>
+                        <td style="padding: 10px;">
+                            <% if (u.role !== 'admin') { %>
+                                <form action="/admin/users/<%= u.id %>/status" method="POST" style="display: inline;">
+                                    <select name="status" onchange="this.form.submit()" style="padding: 5px;">
+                                        <option value="active" <%= u.status === 'active' ? 'selected' : '' %>>Active</option>
+                                        <option value="archived" <%= u.status === 'archived' ? 'selected' : '' %>>Archived</option>
+                                    </select>
+                                </form>
+                                <form action="/admin/users/<%= u.id %>/status" method="POST" style="display: inline; margin-left: 5px;">
+                                    <input type="hidden" name="status" value="blocked">
+                                    <select name="blockedUntil" style="padding: 5px;">
+                                        <option value="">Block Permanently</option>
+                                        <option value="15days">Block 15 Days</option>
+                                    </select>
+                                    <button type="submit" class="btn" style="padding: 5px 10px; font-size: 0.8rem; background-color: #cc0000;">Block</button>
+                                </form>
+                            <% } else { %>
+                                <span style="color: grey;">Admin</span>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>
