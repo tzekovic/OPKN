@@ -1,0 +1,49 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <h1>My Orders</h1>
+    
+    <% if (orders.length === 0) { %>
+        <p>You haven't placed any orders yet.</p>
+    <% } else { %>
+        <div class="card" style="overflow-x: auto;">
+             <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background-color: var(--secondary-color); color: white;">
+                        <th style="padding: 10px; text-align: left;">Order ID</th>
+                        <th style="padding: 10px; text-align: left;">Seller</th>
+                        <th style="padding: 10px; text-align: left;">Date</th>
+                        <th style="padding: 10px; text-align: left;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% orders.forEach(o => { %>
+                        <tr style="border-bottom: 1px solid #ccc;">
+                            <td style="padding: 10px;">#<%= o.id %></td>
+                            <td style="padding: 10px;"><%= o.seller_name %></td>
+                            <td style="padding: 10px;"><%= new Date(o.created_at).toLocaleDateString() %></td>
+                            <td style="padding: 10px;">
+                                <% 
+                                    let statusColor = '#c0392b'; // default/rejected
+                                    if (o.status === 'pending') statusColor = '#f39c12';
+                                    else if (o.status === 'accepted') statusColor = '#27ae60';
+                                    else if (o.status === 'completed') statusColor = '#2980b9';
+                                %>
+                                <span style="
+                                    padding: 4px 8px; 
+                                    border-radius: 4px; 
+                                    color: white; 
+                                    font-size: 0.9em;
+                                    background-color: <%= statusColor %>">
+                                    <%= o.status.toUpperCase() %>
+                                </span>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+             </table>
+        </div>
+    <% } %>
+</div>
+
+<%- include('../partials/footer') %>

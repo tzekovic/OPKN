@@ -1,0 +1,108 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <h1><%= title %></h1>
+    
+    <div class="card" style="max-width: 800px; margin: 0 auto;">
+        <form action="<%= book ? '/seller/books/edit/' + book.id : '/seller/books/add' %>" method="POST" enctype="multipart/form-data">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
+                <div>
+                    <label for="title">Title</label>
+                    <input type="text" name="title" id="title" value="<%= book ? book.title : '' %>" required style="width: 100%; padding: 8px;">
+                </div>
+                <div>
+                    <label for="author">Author</label>
+                    <input type="text" name="author" id="author" value="<%= book ? book.author : '' %>" required style="width: 100%; padding: 8px;">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
+                <div>
+                    <label for="publisher">Publisher</label>
+                    <input type="text" name="publisher" id="publisher" value="<%= book ? book.publisher : '' %>" style="width: 100%; padding: 8px;">
+                </div>
+                <div>
+                    <label for="year">Year Published</label>
+                    <input type="number" name="year" id="year" value="<%= book ? book.year_published : '' %>" style="width: 100%; padding: 8px;">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 15px;">
+                <div>
+                    <label for="genreId">Genre</label>
+                    <select name="genreId" id="genreId" style="width: 100%; padding: 8px;">
+                        <% genres.forEach(g => { %>
+                            <option value="<%= g.id %>" <%= book && book.genre_id === g.id ? 'selected' : '' %>><%= g.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div>
+                    <label for="languageId">Language</label>
+                    <select name="languageId" id="languageId" style="width: 100%; padding: 8px;">
+                        <% languages.forEach(l => { %>
+                            <option value="<%= l.id %>" <%= book && book.language_id === l.id ? 'selected' : '' %>><%= l.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div>
+                    <label for="conditionId">Condition</label>
+                    <select name="conditionId" id="conditionId" style="width: 100%; padding: 8px;">
+                        <% conditions.forEach(c => { %>
+                            <option value="<%= c.id %>" <%= book && book.condition_id === c.id ? 'selected' : '' %>><%= c.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label for="description">Description</label>
+                <textarea name="description" id="description" rows="5" style="width: 100%; padding: 8px;"><%= book ? book.description : '' %></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
+                <div>
+                    <label for="price">Price (USD)</label>
+                    <input type="number" step="0.01" name="price" id="price" value="<%= book ? book.price : '0' %>" style="width: 100%; padding: 8px;">
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <input type="checkbox" name="exchange" id="exchange" <%= book && book.is_exchange_possible ? 'checked' : '' %> style="margin-right: 10px; width: 10px;">
+                    <label for="exchange">Available for Exchange?</label>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label for="locationId">Pickup Location</label>
+                <select name="locationId" id="locationId" style="width: 100%; padding: 8px;">
+                    <% cities.forEach(c => { %>
+                        <option value="<%= c.id %>" <%= book && book.location_id === c.id ? 'selected' : '' %>><%= c.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label for="image">Book Image (Leave empty to keep current)</label>
+                <input type="file" name="image" id="image" accept="image/*" style="width: 100%;">
+                <% if (book && book.image_url) { %>
+                    <p>Current Image: <a href="<%= book.image_url %>" target="_blank">View</a></p>
+                <% } %>
+            </div>
+
+            <% if (book) { %>
+                <div style="margin-bottom: 20px;">
+                    <label for="status">Status</label>
+                    <select name="status" id="status" style="width: 100%; padding: 8px;">
+                        <option value="active" <%= book.status === 'active' ? 'selected' : '' %>>Active</option>
+                        <option value="reserved" <%= book.status === 'reserved' ? 'selected' : '' %>>Reserved</option>
+                        <option value="sold" <%= book.status === 'sold' ? 'selected' : '' %>>Sold/Exchanged</option>
+                        <option value="archived" <%= book.status === 'archived' ? 'selected' : '' %>>Archived</option>
+                    </select>
+                </div>
+            <% } %>
+
+            <button type="submit" class="btn" style="width: 100%;"><%= book ? 'Update Book' : 'Add Book' %></button>
+        </form>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,44 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <h1>My Seller Profile</h1>
+
+    <div class="card" style="max-width: 600px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <% if (profile.profile_image) { %>
+                <img src="<%= profile.profile_image %>" alt="Profile" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+            <% } else { %>
+                <div style="width: 150px; height: 150px; border-radius: 50%; background-color: #eee; border: 2px dashed #999; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+                    No Image
+                </div>
+            <% } %>
+            <p style="margin-top: 10px;">Rating: <strong><%= profile.average_rating || 'N/A' %></strong> / 5</p>
+        </div>
+
+        <form action="/seller/profile" method="POST" enctype="multipart/form-data">
+            <div style="margin-bottom: 15px;">
+                <label for="cityId">City</label>
+                <select name="cityId" id="cityId" style="width: 100%; padding: 8px;">
+                    <option value="">-- Select City --</option>
+                    <% cities.forEach(c => { %>
+                        <option value="<%= c.id %>" <%= profile.city_id === c.id ? 'selected' : '' %>><%= c.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label for="description">About Me</label>
+                <textarea name="description" id="description" rows="4" style="width: 100%; padding: 8px;"><%= profile.description || '' %></textarea>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label for="profileImage">Update Profile Image</label>
+                <input type="file" name="profileImage" id="profileImage" accept="image/*">
+            </div>
+
+            <button type="submit" class="btn" style="width: 100%;">Save Profile</button>
+        </form>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

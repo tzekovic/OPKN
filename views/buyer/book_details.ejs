@@ -1,0 +1,113 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <div class="card" style="margin-top: 20px;">
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 40px;">
+            
+            <!-- Left: Image -->
+            <div>
+                <% if (book.image_url) { %>
+                    <img src="<%= book.image_url %>" alt="<%= book.title %>" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <% } else { %>
+                    <div style="width: 100%; aspect-ratio: 2/3; background-color: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center;">No Image</div>
+                <% } %>
+            </div>
+
+            <!-- Right: Details -->
+            <div>
+                <h1 style="color: var(--primary-color); margin-top: 0;"><%= book.title %></h1>
+                <h3 style="color: #555; margin-top: 0;">by <%= book.author %></h3>
+                
+                <p style="font-size: 1.5rem; font-weight: bold; margin: 20px 0;">
+                    <%= book.price > 0 ? '$' + book.price : 'Exchange Only' %>
+                    <% if (book.is_exchange_possible) { %>
+                        <span style="font-size: 1rem; color: var(--accent-color); font-weight: normal;">(Exchange Possible)</span>
+                    <% } %>
+                </p>
+
+                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <p><strong>Genre:</strong> <%= book.genre %></p>
+                    <p><strong>Language:</strong> <%= book.language %></p>
+                    <p><strong>Condition:</strong> <%= book.condition %></p>
+                    <p><strong>Location:</strong> <%= book.city %></p>
+                    <p><strong>Publisher:</strong> <%= book.publisher %> (<%= book.year_published %>)</p>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <h4>Description</h4>
+                    <p style="white-space: pre-line;"><%= book.description %></p>
+                </div>
+
+                <!-- Seller Info -->
+                <div style="border-top: 1px solid #eee; padding-top: 15px; margin-bottom: 20px;">
+                    <p>Sold by: <strong><%= book.seller_name %></strong> 
+                        <% if (book.seller_rating) { %>
+                             (Rating: <%= book.seller_rating %>/5)
+                        <% } %>
+                    </p>
+                </div>
+
+                <!-- Action Buttons -->
+                <% if (user && user.role === 'buyer') { %>
+                    <form action="/buyer/cart/add" method="POST" style="margin-bottom: 10px;">
+                        <input type="hidden" name="bookId" value="<%= book.id %>">
+                        <button type="submit" class="btn" style="font-size: 1.1rem; padding: 12px 30px;">
+                            <%= book.price > 0 ? 'Add to Cart' : 'Request Exchange' %>
+                        </button>
+                    </form>
+                    
+                    <a href="/chat/start?userId=<%= book.seller_id %>" class="btn" style="background-color: var(--secondary-color);">Contact Seller</a>
+                <% } else if (!user) { %>
+                    <a href="/login" class="btn" style="background-color: #888;">Login to Buy</a>
+                <% } %>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="card" style="margin-top: 30px;">
+        <h2>Reviews & Comments</h2>
+        
+        <% if (reviews.length === 0) { %>
+            <p>No reviews yet.</p>
+        <% } else { %>
+            <div style="margin-top: 20px;">
+                <% reviews.forEach(r => { %>
+                    <div style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                        <p style="margin: 0;"><strong><%= r.first_name %></strong> <span style="color: #f39c12;">★ <%= r.rating %>/5</span></p>
+                        <p style="margin: 5px 0;"><%= r.comment %></p>
+                        <small style="color: #999;"><%= new Date(r.created_at).toLocaleDateString() %></small>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+
+        <% if (user && user.role === 'buyer') { %>
+            <div style="margin-top: 30px; border-top: 2px solid #eee; padding-top: 20px;">
+                <h3>Leave a Review</h3>
+                <small>Only for books you have purchased.</small>
+                <form action="/buyer/review" method="POST" style="margin-top: 15px;">
+                    <input type="hidden" name="bookId" value="<%= book.id %>">
+                    <div style="margin-bottom: 10px;">
+                        <label>Rating:</label>
+                        <select name="rating" style="padding: 5px;">
+                            <option value="5">5 - Excellent</option>
+                            <option value="4">4 - Good</option>
+                            <option value="3">3 - Average</option>
+                            <option value="2">2 - Poor</option>
+                            <option value="1">1 - Terrible</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <textarea name="comment" rows="3" placeholder="Write your comment..." style="width: 100%; padding: 8px;"></textarea>
+                    </div>
+                    <button type="submit" class="btn">Submit Review</button>
+                </form>
+            </div>
+        <% } %>
+    </div>
+
+</div>
+
+<%- include('../partials/footer') %>

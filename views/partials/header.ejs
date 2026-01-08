@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'Book Exchange' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <ul>
+                    <li><a href="/" style="font-weight: bold; font-size: 1.2rem; color: var(--primary-color);">BookExchange</a></li>
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <% if (user) { %>
+                            <% if (user.role === 'admin') { %>
+                                <li><a href="/admin/dashboard">Dashboard</a></li>
+                            <% } else if (user.role === 'seller') { %>
+                                <li><a href="/seller/books">My Books</a></li>
+                                <li><a href="/seller/orders">Orders</a></li>
+                                <li><a href="/seller/profile">Profile</a></li>
+                            <% } else { %>
+                                <li><a href="/search">Pretraga</a></li>
+                                <li><a href="/buyer/cart">Cart</a></li>
+                                <li><a href="/buyer/orders">Orders</a></li>
+                                
+                            <% } %>
+                            
+                            <li style="position: relative;">
+                                <a href="/chat/inbox">Messages</a>
+                                <% if (typeof unreadCount !== 'undefined' && unreadCount > 0) { %>
+                                    <span style="position: absolute; top: -5px; right: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7em;">
+                                        <%= unreadCount %>
+                                    </span>
+                                <% } %>
+                            </li>
+
+                            <li><a href="/logout" class="btn" style="background-color: var(--secondary-color);">Logout</a></li>
+                        <% } else { %>
+                            <li><a href="/login" style="margin-right: 10px;">Login</a></li>
+                            <li><a href="/register" class="btn">Register</a></li>
+                        <% } %>
+                    </div>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="container" style="min-height: 80vh; padding-top: 2rem;">

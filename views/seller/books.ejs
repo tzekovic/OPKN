@@ -1,0 +1,44 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>My Books</h1>
+        <a href="/seller/books/add" class="btn">Add New Book</a>
+    </div>
+
+    <!-- Filters placeholder -->
+    <div class="card" style="margin-bottom: 20px;">
+        <p><strong>Filters:</strong> TODO (Active/Sold/Archived)</p>
+    </div>
+
+    <% if (books.length === 0) { %>
+        <p>You haven't listed any books yet.</p>
+    <% } else { %>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+            <% books.forEach(book => { %>
+                <div class="card" style="display: flex; flex-direction: column;">
+                    <% if (book.image_url) { %>
+                        <img src="<%= book.image_url %>" alt="<%= book.title %>" style="width: 100%; height: 200px; object-fit: cover; border-radius: 4px;">
+                    <% } else { %>
+                        <div style="width: 100%; height: 200px; background-color: #eee; display: flex; align-items: center; justify-content: center; border-radius: 4px;">No Image</div>
+                    <% } %>
+                    
+                    <h3 style="margin-top: 10px; margin-bottom: 5px;"><%= book.title %></h3>
+                    <p style="margin: 0; color: #666;"><%= book.author %></p>
+                    <p style="font-weight: bold; color: var(--primary-color); margin-top: auto;">
+                        <%= book.price > 0 ? '$' + book.price : 'Exchange Only' %>
+                    </p>
+                    <% const statusColor = book.status === 'active' ? 'green' : 'red'; %>
+                    <p style="font-size: 0.8em; color: <%= statusColor %>">
+                        Status: <%= book.status %>
+                    </p>
+                    <div style="margin-top: 10px;">
+                        <a href="/seller/books/edit/<%= book.id %>" class="btn" style="padding: 5px 10px; font-size: 0.9em;">Edit</a>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</div>
+
+<%- include('../partials/footer') %>

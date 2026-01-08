@@ -1,0 +1,32 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <h1>Inbox</h1>
+    
+    <% if (conversations.length === 0) { %>
+        <p>No messages yet.</p>
+    <% } else { %>
+        <div class="card">
+            <% conversations.forEach(c => { %>
+                </a>
+                
+                <% 
+                    const isUnread = (!c.is_read && c.last_sender_id != userId);
+                    const textColor = isUnread ? 'black' : '#666';
+                    const fontWeight = isUnread ? 'bold' : 'normal';
+                %>
+                <a href="/chat/<%= c.partner_id %>" style="text-decoration: none; color: inherit; display: block; padding: 15px; border-bottom: 1px solid #eee; transition: background 0.2s;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong><%= c.first_name %> <%= c.last_name %></strong>
+                        <small style="color: #999;"><%= new Date(c.created_at).toLocaleString() %></small>
+                    </div>
+                    <p style="margin: 5px 0; color: <%= textColor %>; font-weight: <%= fontWeight %>;">
+                         <%= c.last_sender_id == userId ? 'You: ' : '' %><%= c.last_message %>
+                    </p>
+                </a>
+            <% }) %>
+        </div>
+    <% } %>
+</div>
+
+<%- include('../partials/footer') %>

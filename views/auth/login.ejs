@@ -1,0 +1,30 @@
+<%- include('../partials/header') %>
+
+<div style="max-width: 400px; margin: 0 auto;">
+    <div class="card">
+        <h2 style="text-align: center; color: var(--primary-color);">Login</h2>
+        
+        <% if (error) { %>
+            <div style="background-color: #ffcccc; color: #cc0000; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+                <%= error %>
+            </div>
+        <% } %>
+
+        <form action="/login" method="POST">
+            <div style="margin-bottom: 15px;">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <button type="submit" class="btn" style="width: 100%;">Login</button>
+        </form>
+        <p style="text-align: center; margin-top: 15px;">
+            Don't have an account? <a href="/register" style="color: var(--primary-color);">Register here</a>.
+        </p>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,60 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <h1>Incoming Orders</h1>
+
+    <% if (orders.length === 0) { %>
+        <p>No orders yet.</p>
+    <% } else { %>
+        <div class="card" style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background-color: var(--secondary-color); color: white;">
+                        <th style="padding: 10px; text-align: left;">Order ID</th>
+                        <th style="padding: 10px; text-align: left;">Book</th>
+                        <th style="padding: 10px; text-align: left;">Buyer</th>
+                        <th style="padding: 10px; text-align: left;">Date</th>
+                        <th style="padding: 10px; text-align: left;">Type</th>
+                        <th style="padding: 10px; text-align: left;">Status</th>
+                        <th style="padding: 10px; text-align: left;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% orders.forEach(o => { %>
+                        <tr style="border-bottom: 1px solid #ccc;">
+                            <td style="padding: 10px;">#<%= o.id %></td>
+                            <td style="padding: 10px;"><%= o.book_title %></td>
+                            <td style="padding: 10px;"><%= o.buyer_name %></td>
+                            <td style="padding: 10px;"><%= new Date(o.created_at).toLocaleDateString() %></td>
+                            <td style="padding: 10px;"><%= o.type %></td>
+                            <td style="padding: 10px; font-weight: bold;">
+                                <%= o.status %>
+                            </td>
+                            <td style="padding: 10px;">
+                                <% if (o.status === 'pending') { %>
+                                    <form action="/seller/orders/<%= o.id %>/status" method="POST" style="display: inline;">
+                                        <input type="hidden" name="status" value="accepted">
+                                        <button type="submit" class="btn" style="padding: 5px 10px; background-color: green;">Accept</button>
+                                    </form>
+                                    <form action="/seller/orders/<%= o.id %>/status" method="POST" style="display: inline;">
+                                        <input type="hidden" name="status" value="rejected">
+                                        <button type="submit" class="btn" style="padding: 5px 10px; background-color: red;">Reject</button>
+                                    </form>
+                                <% } else if (o.status === 'accepted') { %>
+                                    <form action="/seller/orders/<%= o.id %>/status" method="POST">
+                                        <input type="hidden" name="status" value="completed">
+                                        <button type="submit" class="btn" style="padding: 5px 10px; background-color: blue;">Mark Completed</button>
+                                    </form>
+                                <% } else { %>
+                                    <span>-</span>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</div>
+
+<%- include('../partials/footer') %>
