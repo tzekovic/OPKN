@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const buyerController = require('../controllers/buyer.controller');
+const publicController = require('../controllers/public.controller');
 const { isRole, isAuthenticated } = require('../middleware/auth.middleware');
 
 // Public routes (Search, Details, Home)
-router.get('/', buyerController.getHome);
+router.get('/', publicController.getHome);
 router.get('/search', buyerController.searchBooks);
 router.get('/books/:id', buyerController.getBookDetails);
 

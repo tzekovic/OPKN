@@ -53,7 +53,7 @@ const buyerRoutes = require('./routes/buyer.routes');
 const chatRoutes = require('./routes/chat.routes');
 const publicController = require('./controllers/public.controller');
 
-app.use('/', authRoutes);
+app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/seller', sellerRoutes);
 app.use('/chat', chatRoutes);

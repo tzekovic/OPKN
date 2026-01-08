@@ -2,27 +2,27 @@
 
 <div style="max-width: 400px; margin: 0 auto;">
     <div class="card">
-        <h2 style="text-align: center; color: var(--primary-color);">Login</h2>
+        <h2 class="text-center">Login</h2>
         
         <% if (error) { %>
-            <div style="background-color: #ffcccc; color: #cc0000; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+            <div class="alert alert-danger" style="background-color: #fee2e2; color: #991b1b; padding: 12px; border-radius: var(--radius-sm); margin-bottom: 20px;">
                 <%= error %>
             </div>
         <% } %>
 
-        <form action="/login" method="POST">
-            <div style="margin-bottom: 15px;">
+        <form action="/auth/login" method="POST">
+            <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" name="email" id="email" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="email" name="email" id="email" class="form-control" required>
             </div>
-            <div style="margin-bottom: 20px;">
+            <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" name="password" id="password" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="password" name="password" id="password" class="form-control" required>
             </div>
             <button type="submit" class="btn" style="width: 100%;">Login</button>
         </form>
-        <p style="text-align: center; margin-top: 15px;">
-            Don't have an account? <a href="/register" style="color: var(--primary-color);">Register here</a>.
+        <p class="text-center mt-lg">
+            Don't have an account? <a href="/auth/register" style="color: var(--primary-color); font-weight: 500;">Register here</a>.
         </p>
     </div>
 </div>

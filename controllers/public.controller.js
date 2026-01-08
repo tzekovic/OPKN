@@ -1,5 +1,20 @@
 const db = require('../config/db');
 
+exports.getHome = async (req, res) => {
+    try {  
+        // Popular books (by views or sales, using views for simple approximation or random for now if no sales data)
+        const popularBooks = await db.query("SELECT * FROM books WHERE status = 'active' ORDER BY views_count DESC LIMIT 4");
+
+        res.render('index', { 
+            title: 'Home', 
+            popularBooks: popularBooks.rows,
+        });
+    } catch (err) {
+        console.error(err);
+        res.render('error', { message: 'Error loading home' });
+    }
+};
+
 exports.getUserProfile = async (req, res) => {
     const targetUserId = req.params.userId;
     

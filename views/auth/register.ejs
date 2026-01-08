@@ -2,48 +2,48 @@
 
 <div style="max-width: 500px; margin: 0 auto;">
     <div class="card">
-        <h2 style="text-align: center; color: var(--primary-color);">Register</h2>
+        <h2 class="text-center">Register</h2>
 
         <% if (error) { %>
-            <div style="background-color: #ffcccc; color: #cc0000; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+            <div class="alert alert-danger" style="background-color: #fee2e2; color: #991b1b; padding: 12px; border-radius: var(--radius-sm); margin-bottom: 20px;">
                 <%= error %>
             </div>
         <% } %>
 
-        <form action="/register" method="POST">
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+        <form action="/auth/register" method="POST">
+            <div class="flex" style="gap: 10px; margin-bottom: 20px;">
                 <div style="flex: 1;">
-                    <label for="firstName">First Name</label>
-                    <input type="text" name="firstName" id="firstName" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    <label for="firstName" style="display: block; margin-bottom: 8px; font-weight: 500;">First Name</label>
+                    <input type="text" name="firstName" id="firstName" class="form-control" required>
                 </div>
                 <div style="flex: 1;">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" name="lastName" id="lastName" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    <label for="lastName" style="display: block; margin-bottom: 8px; font-weight: 500;">Last Name</label>
+                    <input type="text" name="lastName" id="lastName" class="form-control" required>
                 </div>
             </div>
 
-            <div style="margin-bottom: 15px;">
+            <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" name="email" id="email" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="email" name="email" id="email" class="form-control" required>
             </div>
 
-            <div style="margin-bottom: 15px;">
+            <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" name="password" id="password" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="password" name="password" id="password" class="form-control" required>
             </div>
 
-            <div style="margin-bottom: 20px;">
+            <div class="form-group">
                 <label for="role">Register as:</label>
-                <select name="role" id="role" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <select name="role" id="role" class="form-control">
                     <option value="buyer">Buyer (I want to buy/exchange)</option>
-                    <option value="seller">Seller (I want to listen books)</option>
+                    <option value="seller">Seller (I want to list books)</option>
                 </select>
             </div>
 
             <button type="submit" class="btn" style="width: 100%;">Register</button>
         </form>
-        <p style="text-align: center; margin-top: 15px;">
-            Already have an account? <a href="/login" style="color: var(--primary-color);">Login here</a>.
+        <p class="text-center mt-lg">
+            Already have an account? <a href="/auth/login" style="color: var(--primary-color); font-weight: 500;">Login here</a>.
         </p>
     </div>
 </div>
