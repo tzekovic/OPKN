@@ -40,7 +40,7 @@
 
                 <!-- Seller Info -->
                 <div style="border-top: 1px solid #eee; padding-top: 15px; margin-bottom: 20px;">
-                    <p>Sold by: <strong><%= book.seller_name %></strong> 
+                    <p>Sold by: <strong><a href="/users/<%= book.seller_id %>"><%= book.seller_name %></a></strong> 
                         <% if (book.seller_rating) { %>
                              (Rating: <%= book.seller_rating %>/5)
                         <% } %>

@@ -51,11 +51,13 @@ const adminRoutes = require('./routes/admin.routes');
 const sellerRoutes = require('./routes/seller.routes');
 const buyerRoutes = require('./routes/buyer.routes');
 const chatRoutes = require('./routes/chat.routes');
+const publicController = require('./controllers/public.controller');
 
 app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/seller', sellerRoutes);
-app.use('/chat', chatRoutes); // Chat under /chat
+app.use('/chat', chatRoutes);
+app.get('/users/:userId', publicController.getUserProfile); // Public profile route
 app.use('/', buyerRoutes); // Home and Search are at root
 
 

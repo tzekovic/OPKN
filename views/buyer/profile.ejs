@@ -1,21 +1,21 @@
 <%- include('../partials/header') %>
 
 <div class="container">
-    <h1>My Seller Profile</h1>
+    <h1>My Buyer Profile</h1>
 
-    <div class="card" style="max-width: 600px; margin: 0 auto;">
+    <div class="card" style="max-width: 700px; margin: 0 auto;">
+        
         <div style="text-align: center; margin-bottom: 20px;">
             <% if (profile.profile_image) { %>
-                <img src="<%= profile.profile_image %>" alt="Profile" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--accent-color);">
+                <img src="<%= profile.profile_image %>" alt="Profile" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-color);">
             <% } else { %>
                 <div style="width: 150px; height: 150px; border-radius: 50%; background-color: #eee; border: 2px dashed #999; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
                     No Image
                 </div>
             <% } %>
-            <p style="margin-top: 10px;">Rating: <strong><%= profile.average_rating || 'N/A' %></strong> / 5</p>
         </div>
 
-        <form action="/seller/profile" method="POST" enctype="multipart/form-data">
+        <form action="/buyer/profile" method="POST" enctype="multipart/form-data">
             
             <h3 style="border-bottom: 1px solid #eee; padding-bottom: 5px;">Personal Info</h3>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
@@ -46,26 +46,40 @@
                        style="width: 100%; padding: 8px;">
             </div>
 
-            <h3 style="border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 20px;">Seller Details</h3>
-            
-            <div style="margin-bottom: 15px;">
-                <label for="cityId">City (Location)</label>
-                <select name="cityId" id="cityId" style="width: 100%; padding: 8px;">
-                    <option value="">-- Select City --</option>
-                    <% cities.forEach(c => { %>
-                        <option value="<%= c.id %>" <%= profile.city_id === c.id ? 'selected' : '' %>><%= c.name %></option>
-                    <% }) %>
-                </select>
+            <div style="margin-bottom: 20px;">
+                <label for="profileImage">Profile Image</label>
+                <input type="file" name="profileImage" id="profileImage" accept="image/*">
             </div>
 
-            <div style="margin-bottom: 15px;">
-                <label for="description">About Me / Shop Description</label>
-                <textarea name="description" id="description" rows="4" style="width: 100%; padding: 8px;"><%= profile.description || '' %></textarea>
+            <h3 style="border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 20px;">My Interests</h3>
+            <p style="font-size: 0.9em; color: #666;">Select genres and languages you are interested in. This helps us recommend books.</p>
+
+            <div style="margin-bottom: 20px;">
+                <strong>Genres:</strong>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px;">
+                    <% genres.forEach(g => { %>
+                        <label style="background: #f1f1f1; padding: 5px 10px; border-radius: 15px; cursor: pointer;">
+                            <input type="checkbox" name="interestsGenres" value="<%= g.id %>" 
+                                <%= (profile.interests && profile.interests.genres && profile.interests.genres.includes(g.id.toString())) ? 'checked' : '' %>
+                            > 
+                            <%= g.name %>
+                        </label>
+                    <% }) %>
+                </div>
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label for="profileImage">Update Profile Image</label>
-                <input type="file" name="profileImage" id="profileImage" accept="image/*">
+                <strong>Languages:</strong>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px;">
+                    <% languages.forEach(l => { %>
+                        <label style="background: #f1f1f1; padding: 5px 10px; border-radius: 15px; cursor: pointer;">
+                            <input type="checkbox" name="interestsLanguages" value="<%= l.id %>" 
+                                <%= (profile.interests && profile.interests.languages && profile.interests.languages.includes(l.id.toString())) ? 'checked' : '' %>
+                            > 
+                            <%= l.name %>
+                        </label>
+                    <% }) %>
+                </div>
             </div>
 
             <button type="submit" class="btn" style="width: 100%;">Save Profile</button>

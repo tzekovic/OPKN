@@ -2,20 +2,7 @@ const express = require('express');
 const router = express.Router();
 const sellerController = require('../controllers/seller.controller');
 const { isRole } = require('../middleware/auth.middleware');
-const multer = require('multer');
-const path = require('path');
-
-// Multer Config
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'public/uploads/'); 
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, 'img-' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
-const upload = multer({ storage: storage });
+const upload = require('../middleware/upload.middleware');
 
 // Protect routes
 router.use(isRole('seller'));

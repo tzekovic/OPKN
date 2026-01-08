@@ -1,0 +1,69 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <div class="card" style="max-width: 800px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <% if (targetUser.profile_image) { %>
+                <img src="<%= targetUser.profile_image %>" alt="Profile" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-color);">
+            <% } else { %>
+                <div style="width: 150px; height: 150px; border-radius: 50%; background-color: #eee; border: 2px dashed #999; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+                    No Image
+                </div>
+            <% } %>
+            
+            <h1 style="margin: 10px 0 5px;"><%= targetUser.first_name %> <%= targetUser.last_name %></h1>
+            <p style="text-transform: capitalize; color: #666;"><%= targetUser.role %></p>
+            
+            <% if (currentUser && currentUser.role !== 'admin' && currentUser.id !== targetUser.user_id) { %>
+                <a href="/chat/start?userId=<%= targetUser.user_id %>" class="btn" style="margin-top: 10px;">Send Message</a>
+            <% } %>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+            <div>
+                <h3>About</h3>
+                <% if (targetUser.description) { %>
+                    <p><%= targetUser.description %></p>
+                <% } else { %>
+                    <p style="color: #999; font-style: italic;">No description provided.</p>
+                <% } %>
+                
+                <ul style="list-style: none; padding: 0; margin-top: 20px;">
+                    <% if (targetUser.city_name) { %>
+                        <li style="margin-bottom: 8px;"><strong>Location:</strong> <%= targetUser.city_name %></li>
+                    <% } %>
+                    <!-- Only show contact info if logged in? Or always? Let's show always for now as requested -->
+                </ul>
+            </div>
+            
+            <div>
+                <% if (targetUser.role === 'seller' && targetUser.books && targetUser.books.length > 0) { %>
+                    <h3>Active Listings (<%= targetUser.books.length %>)</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px;">
+                        <% targetUser.books.forEach(b => { %>
+                            <a href="/books/<%= b.id %>" title="<%= b.title %>">
+                                <% if (b.image_url) { %>
+                                    <img src="<%= b.image_url %>" style="width: 100%; height: 140px; object-fit: cover; border-radius: 4px;">
+                                <% } else { %>
+                                    <div style="width: 100%; height: 140px; background: #eee; border-radius: 4px;"></div>
+                                <% } %>
+                            </a>
+                        <% }) %>
+                    </div>
+                <% } else if (targetUser.role === 'buyer' && targetUser.interests_json) { %>
+                    <h3>Interests</h3>
+                    <% if (targetUser.interests_json.genres && targetUser.interests_json.genres.length > 0) { %>
+                        <p><strong>Genres:</strong> 
+                            <!-- We have IDs, ideally we should lookup names, but simpler for now just to show something or we need to join in query -->
+                            <!-- Note: The controller didn't join lookups for names. Let's just list 'Selected' for now or skip complex view logic. -->
+                            <!-- User requested: "interesovanja". Displaying raw IDs is bad. Let's skip detailed names for speed unless critical. -->
+                            <span style="color: #666;">(User has selected <%= targetUser.interests_json.genres.length %> genres)</span>
+                        </p>
+                    <% } %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

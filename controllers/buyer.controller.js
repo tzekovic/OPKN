@@ -225,3 +225,115 @@ exports.postReview = async (req, res) => {
         res.redirect('/books/' + bookId + '?error=ReviewFailed');
     }
 };
+
+exports.getProfile = async (req, res) => {
+    const userId = req.session.user.id;
+    try {
+        const result = await db.query(`
+            SELECT bp.*, u.first_name, u.last_name, u.email, u.phone_number, u.address, u.birth_date
+            FROM buyer_profiles bp
+            JOIN users u ON bp.user_id = u.id
+            WHERE bp.user_id = $1
+        `, [userId]);
+
+        const genres = await db.query('SELECT * FROM lookup_genres ORDER BY name');
+        const languages = await db.query('SELECT * FROM lookup_languages ORDER BY name');
+        
+        let profile = result.rows[0];
+        if (!profile) {
+             await db.query('INSERT INTO buyer_profiles (user_id) VALUES ($1)', [userId]);
+             const userRes = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
+             const u = userRes.rows[0];
+             profile = { 
+                 user_id: userId, 
+                 first_name: u.first_name, 
+                 last_name: u.last_name,
+                 interests_json: { genres: [], languages: [] } 
+             };
+        }
+
+        if (!profile.interests_json) profile.interests_json = { genres: [], languages: [] };
+        
+        const profileData = {
+            ...profile,
+            interests: profile.interests_json
+        };
+
+        res.render('buyer/profile', { 
+            title: 'My Profile', 
+            profile: profileData,
+            genres: genres.rows,
+            languages: languages.rows
+        });
+    } catch (err) {
+        console.error(err);
+        res.render('error', { message: 'Error loading profile' });
+    }
+};
+
+exports.postProfile = async (req, res) => {
+    const userId = req.session.user.id;
+    const { phoneNumber, address, birthDate, interestsGenres, interestsLanguages } = req.body;
+    const imageUrl = req.file ? '/uploads/' + req.file.filename : null;
+
+    const genres = Array.isArray(interestsGenres) ? interestsGenres : (interestsGenres ? [interestsGenres] : []);
+    const languages = Array.isArray(interestsLanguages) ? interestsLanguages : (interestsLanguages ? [interestsLanguages] : []);
+
+    const interestsJson = {
+        genres: genres,
+        languages: languages
+    };
+
+    try {
+        await db.query(`
+            UPDATE users SET phone_number=$1, address=$2, birth_date=$3 WHERE id=$4
+        `, [phoneNumber, address, birthDate || null, userId]);
+
+        if (imageUrl) {
+            await db.query(`
+                UPDATE buyer_profiles SET interests_json=$1, profile_image=$2 WHERE user_id=$3
+            `, [JSON.stringify(interestsJson), imageUrl, userId]);
+        } else {
+             await db.query(`
+                UPDATE buyer_profiles SET interests_json=$1 WHERE user_id=$2
+            `, [JSON.stringify(interestsJson), userId]);
+        }
+
+        res.redirect('/buyer/profile');
+    } catch (err) {
+        console.error(err);
+        res.render('error', { message: 'Error updating profile' });
+    }
+};
+
+exports.cancelOrder = async (req, res) => {
+    const userId = req.session.user.id;
+    const { orderId } = req.body;
+    
+    try {
+        // Can only cancel if pending and owns the order
+        const result = await db.query(`
+            UPDATE orders 
+            SET status = 'cancelled' 
+            WHERE id = $1 AND buyer_id = $2 AND status = 'pending'
+        `, [orderId, userId]);
+        
+        if (result.rowCount > 0) {
+            // Also free up the book?
+            // If books were reserved, we should set them back to 'active'
+            // We need to know which books were in the order.
+            // Simplified: Assuming trigger or manual fix, but let's do it manually here.
+             await db.query(`
+                UPDATE books b
+                SET status = 'active'
+                FROM order_items oi
+                WHERE oi.book_id = b.id AND oi.order_id = $1
+            `, [orderId]);
+        }
+
+        res.redirect('/buyer/orders');
+    } catch (err) {
+        console.error(err);
+        res.render('error', { message: 'Error cancelling order' });
+    }
+};

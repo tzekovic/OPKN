@@ -117,10 +117,14 @@ exports.postEditBook = async (req, res) => {
 exports.getProfile = async (req, res) => {
     const userId = req.session.user.id;
     try {
-        const result = await db.query('SELECT * FROM seller_profiles WHERE user_id = $1', [userId]);
+        const result = await db.query(`
+            SELECT sp.*, u.first_name, u.last_name, u.email, u.phone_number, u.address, u.birth_date
+            FROM seller_profiles sp
+            JOIN users u ON sp.user_id = u.id
+            WHERE sp.user_id = $1
+        `, [userId]);
         const cities = await db.query('SELECT * FROM lookup_cities ORDER BY name');
         
-        // Ensure profile exists (it should from register)
         let profile = result.rows[0];
         
         res.render('seller/profile', { title: 'My Profile', profile, cities: cities.rows });
@@ -132,10 +136,16 @@ exports.getProfile = async (req, res) => {
 
 exports.postProfile = async (req, res) => {
     const userId = req.session.user.id;
-    const { description, cityId } = req.body;
+    const { description, cityId, phoneNumber, address, birthDate } = req.body;
     const imageUrl = req.file ? '/uploads/' + req.file.filename : null;
 
     try {
+        // Update user common info
+        await db.query(`
+            UPDATE users SET phone_number=$1, address=$2, birth_date=$3 WHERE id=$4
+        `, [phoneNumber, address, birthDate || null, userId]);
+
+        // Update seller profile specific info
         if (imageUrl) {
             await db.query(`UPDATE seller_profiles SET description=$1, city_id=$2, profile_image=$3 WHERE user_id=$4`, [description, cityId, imageUrl, userId]);
         } else {
@@ -153,13 +163,13 @@ exports.getOrders = async (req, res) => {
     const sellerId = req.session.user.id;
     try {
         const result = await db.query(`
-            SELECT o.*, 
+            SELECT o.id, o.created_at, o.status, o.type, o.buyer_id,
                    u.first_name || ' ' || u.last_name as buyer_name,
                    b.title as book_title
             FROM orders o
             JOIN users u ON o.buyer_id = u.id
             JOIN order_items oi ON o.id = oi.order_id
-            JOIN books b ON oi.book_id = b.id -- Simplification: assumes 1 book per order mostly, but helps display title in list
+            JOIN books b ON oi.book_id = b.id
             WHERE o.seller_id = $1
             ORDER BY o.created_at DESC
         `, [sellerId]);
