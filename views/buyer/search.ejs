@@ -5,7 +5,7 @@
     
     <!-- Search Form -->
     <div class="card" style="margin-bottom: 30px;">
-        <form action="/search" method="GET" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: end;">
+        <form action="/search" method="GET" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;">
             <div>
                 <label for="q">Keywords</label>
                 <input type="text" name="q" id="q" value="<%= query.q || '' %>" placeholder="Title, Author..." style="width: 100%; padding: 8px;">
